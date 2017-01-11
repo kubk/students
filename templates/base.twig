@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{ path_to('student-list') }}">Список студентов</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <form class="navbar-form navbar-left" role="search" action="{{ path_to('student-list') }}" method="get">
+                    <div class="form-group">
+                        <input type="search" name="search" class="form-control" placeholder="Найти студента" value="{{ search }}">
+                    </div>
+                    <button type="submit" class="btn btn-default">Поиск</button>
+                </form>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{{ path_to('form') }}">{{ isStudentRegistered ? 'Обновить профиль' : 'Зарегистрироваться' }}</a></li>
+            </ul>
+        </div>
+    </nav>
+    {% block body %}{% endblock %}
+</div>
+</body>
+</html>

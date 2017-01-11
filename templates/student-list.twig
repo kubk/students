@@ -1,0 +1,46 @@
+{% extends 'base.twig' %}
+{% block title %}Список студентов{% endblock %}
+{% block body %}
+    {% if notify %}
+        <div class="alert alert-info">{{ notify }}</div>
+    {% endif %}
+
+    {% if students %}
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>{{ linkGenerator.getSortingLink('ID')|raw }}</th>
+                <th>{{ linkGenerator.getSortingLink('Имя')|raw }}</th>
+                <th>{{ linkGenerator.getSortingLink('Фамилия')|raw }}</th>
+                <th>{{ linkGenerator.getSortingLink('Группа')|raw }}</th>
+                <th>{{ linkGenerator.getSortingLink('Пол')|raw }}</th>
+                <th>{{ linkGenerator.getSortingLink('Рейтинг')|raw }}</th>
+            </tr>
+            </thead>
+            {% for student in students %}
+                <tr>
+                    <td>{{ student.id }}</td>
+                    <td>{{ student.name|mark_search(search)|raw }}</td>
+                    <td>{{ student.surname|mark_search(search)|raw }}</td>
+                    <td>{{ student.group|mark_search(search)|raw }}</td>
+                    <td>{{ student.gender|gender }}</td>
+                    <td>{{ student.rating }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <div class="alert alert-info">Студенты{{ search ? ", удовлетворяющие запросу '#{search}'," }} не найдены.
+            <a href="{{ path_to('student-list') }}"><b>Показать всех.</b></a></div>
+    {% endif %}
+    {% if paginator.getTotalPagesCount > 1 %}
+        <div class="text-center">
+            <ul class="pagination">
+                {% for i in paginator.getTotalPagesRange %}
+                    <li {{ paginator.getCurrentPage == i ? 'class="active"' }}>
+                        <a href="{{ linkGenerator.getLinkForPage(i) }}">{{ i }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}
