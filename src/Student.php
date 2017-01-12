@@ -81,8 +81,8 @@ class Student
             // Constraint\Email генерирует input типа email, который считает невалидной почту c кириллицей (иван@почта.рф)
             new Constraint\Regex(['pattern' => '/^[^@]+@[^@]+$/']),
             new Constraint\Length(['max' => 60, 'maxMessage' => 'Максимальная длина почты - {{ limit }}']),
-            new UniqueEmail(),
         ]);
+        $metadata->addConstraint(new UniqueEmail());
     }
 
     public function getId()

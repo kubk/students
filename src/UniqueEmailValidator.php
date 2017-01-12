@@ -21,13 +21,13 @@ class UniqueEmailValidator extends ConstraintValidator
 
     public function validate($value, Constraint $constraint)
     {
-        if ($student = $this->studentGateway->findByEmail($value)) {
-            // Если пользователь обновляет свои данные, не меняя email, то violation не создаётся
-            if ($student->getToken() !== $this->context->getObject()->getToken()) {
-                $this->context->buildViolation($constraint->getErrorMessage())
-                    ->setParameter('%email%', $value)
-                    ->addViolation();
-            }
+        $studentInDb = $this->studentGateway->findByEmail($value->getEmail());
+
+        if ($studentInDb && $studentInDb->getToken() !== $value->getToken()) {
+            $this->context->buildViolation($constraint->getErrorMessage())
+                ->atPath('email')
+                ->setParameter('%email%', $value->getEmail())
+                ->addViolation();
         }
     }
 }

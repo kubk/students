@@ -8,7 +8,13 @@ use Symfony\Component\Validator\Constraint;
 
 class UniqueEmail extends Constraint
 {
-    public function getErrorMessage() {
+    public function getErrorMessage()
+    {
         return 'Почта "%email%" уже занята другим пользователем';
+    }
+
+    public function getTargets()
+    {
+        return self::CLASS_CONSTRAINT;
     }
 }
