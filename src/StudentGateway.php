@@ -60,7 +60,7 @@ class StudentGateway
         }
     }
 
-    public function findAllWith($search = '', $column, $order, $offset, $limit)
+    public function findAllWith(string $search = '', string $column, string $order, int $offset, int $limit)
     {
         if (!in_array($column, ['name', 'surname', 'group', 'rating', 'gender'])) {
             $column = 'id';
@@ -75,10 +75,11 @@ class StudentGateway
             FROM {$this->table}
             WHERE CONCAT(`name`, ' ', `surname`, ' ', `group`, ' ', `rating`) LIKE :search
             ORDER BY `{$column}` {$order}
-            LIMIT :limit OFFSET {$offset}
+            LIMIT :limit OFFSET :offset
         ");
 
-        $query->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
+        $query->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $query->bindValue(':offset', $offset, \PDO::PARAM_INT);
         $query->bindValue(':search', "%{$search}%");
         $query->execute();
         $rows = $query->fetchAll();
