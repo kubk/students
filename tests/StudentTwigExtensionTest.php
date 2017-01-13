@@ -18,62 +18,61 @@ class StudentTwigExtensionTest extends TestCase
     public function setUp()
     {
         $urlGenerator = $this->createMock(UrlGenerator::class);
-        $urlGenerator->method('generate')->with('form')->willReturn('/form');
-
-        $this->studentTwigExtension = new StudentTwigExtension($urlGenerator, [$this, 'wrapFound']);
-    }
-
-    public function wrapFound(array $matches)
-    {
-        $found = $matches[1];
-        return "<{$found}>";
+        $this->studentTwigExtension = new StudentTwigExtension($urlGenerator);
     }
 
     /**
-     * @dataProvider searchStringProvider
-     * @param $string string Строка, в которой ищем
-     * @param $search string Что ищем
-     * @param $marked string Ожидаемый результат
+     * @dataProvider stringFoundProvider
      */
-    public function testMarkSearch($string, $search, $marked)
+    public function testStringFound($string, $search)
     {
-        $this->assertSame(
-            $this->studentTwigExtension->markSearch($search, $string),
-            $marked
-        );
+        $result = $this->studentTwigExtension->markSearch($string, $search);
+        $this->assertContains($search, $result, '' /* message */, true /* ignore case */);
+        $this->assertNotEquals($result, $string);
     }
 
-    public function searchStringProvider()
+    public function stringFoundProvider()
     {
         return [
             [
-                'Поляк',
                 'Поляков',
-                '<Поляк>ов',
-            ],
-            'Если искомая строка не найдена, то возвращается прежняя строка' => [
-                'bbbb',
-                'aaaa',
-                'aaaa'
-            ],
-            'Спецсимволы регулярных выражений не ломают поиск' => [
-                '\w/i',
-                'wonder',
-                'wonder'
+                'Поляк',
             ],
             'Поиск регистронезависимый' => [
-                'B',
                 'aaabaaa',
-                'aaa<b>aaa',
-            ]
+                'B',
+            ],
         ];
     }
 
     /**
-     * Проверка на то, что метод использует UrlGenerator для генерации путей
+     * @dataProvider stringNotFoundProvider
      */
-    public function testPathToRoute()
+    public function testStringNotFound($string, $search)
     {
-        $this->assertSame('/form', $this->studentTwigExtension->pathToRoute('form'));
+        $result = $this->studentTwigExtension->markSearch($string, $search);
+        $this->assertEquals($result, $string);
+    }
+
+    public function stringNotFoundProvider()
+    {
+        return [
+            'Если искомая строка не найдена, то возвращается прежняя строка' => [
+                'aaaa',
+                'bbbb',
+            ],
+            'Спецсимволы регулярных выражений не ломают поиск' => [
+                'wonder',
+                '\w/i',
+            ],
+        ];
+    }
+
+    public function testSpecialCharactersConvertedToHtmlEntities()
+    {
+        $result = $this->studentTwigExtension->markSearch("a'sd<sdfa>sdfsd", "a'sd");
+        $this->assertContains('&lt;', $result);
+        $this->assertContains('&gt;', $result);
+        $this->assertContains('&#039;', $result);
     }
 }

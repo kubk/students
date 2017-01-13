@@ -9,29 +9,16 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 class StudentTwigExtension extends \Twig_Extension
 {
     /**
-     * @var callable
-     */
-    private $wrapFound;
-
-    /**
      * @var UrlGenerator
      */
     private $urlGenerator;
 
     /**
      * @param UrlGenerator $urlGenerator Используется для генерации путей в шаблонах
-     * @param callable|null $wrapFound Как обрамлять найдённую строку
      */
-    public function __construct(UrlGenerator $urlGenerator, callable $wrapFound = null)
+    public function __construct(UrlGenerator $urlGenerator)
     {
         $this->urlGenerator = $urlGenerator;
-        $this->wrapFound = $wrapFound ?: [$this, 'wrapFound'];
-    }
-
-    private function wrapFound(array $matches): string
-    {
-        $found = $matches[1];
-        return "<b>{$found}</b>";
     }
 
     public function getFilters(): array
@@ -54,10 +41,16 @@ class StudentTwigExtension extends \Twig_Extension
 
         if ($search) {
             $pattern = '/(' . preg_quote($search, '/') . ')/iu';
-            return preg_replace_callback($pattern, $this->wrapFound, $input);
+            return preg_replace_callback($pattern, [$this, 'wrapFound'], $input);
         }
 
         return $input;
+    }
+
+    private function wrapFound(array $matches): string
+    {
+        $found = $matches[1];
+        return "<b>{$found}</b>";
     }
 
     public function getGenderForConstant(string $constant): string
