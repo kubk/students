@@ -6,110 +6,82 @@ namespace Tests;
 
 use App\Student;
 use App\AuthService;
-use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use App\StudentGateway;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
-class AuthServiceTest extends StudentTestCase
+class AuthServiceTest extends TestCase
 {
     /**
      * @var AuthService
      */
     private $authService;
 
+    /**
+     * @var \PDO
+     */
+    private $pdo;
+
     public function setUp()
     {
-        $this->authService = new AuthService($this->getStudentGatewayMock());
+        $app = require __DIR__ . '/../src/app.php';
+        $this->pdo = $app['pdo'];
+        $this->pdo->beginTransaction();
+        $studentGateway = new StudentGateway($this->pdo);
+        $this->authService = new AuthService($studentGateway);
     }
 
-    public function testServiceReturnsRegisteredUser()
+    public function testServiceDoesNotReturnStudentForEmptyParameterBag()
+    {
+        $parameterBag = new ParameterBag();
+        $result = $this->authService->getRegisteredStudent($parameterBag);
+        $this->assertFalse($result instanceof Student);
+    }
+
+    public function testLoopback()
     {
         $authService = $this->authService;
-        $requestWithExistingInDbToken = $this->getRequestWithCookieToken('existing_token');
-        $requestWithNonExistentInDbToken = $this->getRequestWithCookieToken('nonexistent_token');
-        $this->assertInstanceOf(Student::class, $authService->getRegisteredStudent($requestWithExistingInDbToken));
-        $this->assertFalse($authService->getRegisteredStudent($requestWithNonExistentInDbToken) instanceof Student);
+        $student = new Student($this->getNonexistentStudentArray());
+        $this->assertFalse($authService->isStudentRegistered($student));
+
+        $registeredStudent = $authService->registerStudent($student);
+        $this->assertTrue($authService->isStudentRegistered($registeredStudent));
+
+        $rememberedStudentHeaders = $authService->rememberStudent($registeredStudent, new ResponseHeaderBag());
+        $parameterBag = $this->convertResponseHeaderBagToParameterBag($rememberedStudentHeaders);
+        $this->assertInstanceOf(Student::class, $authService->getRegisteredStudent($parameterBag));
+
+        $unregisteredStudentHeaders = $authService->unregister($rememberedStudentHeaders);
+        $parameterBag = $this->convertResponseHeaderBagToParameterBag($unregisteredStudentHeaders);
+        $this->assertFalse($authService->getRegisteredStudent($parameterBag) instanceof Student);
     }
 
-    private function getRequestWithCookieToken($token): Request
+    private function getNonexistentStudentArray(): array
     {
-        $request = new Request();
-        $tokenKey = $this->authService->getTokenKey();
-        $request->cookies = new ParameterBag([$tokenKey => $token]);
-        return $request;
+        return [
+            'name' => '',
+            'surname' => '',
+            'email' => 'nonexistent@mail.ru',
+            'gender' => Student::GENDER_MALE,
+            'rating' => 1,
+            'group' => '',
+        ];
     }
 
-    public function testRegisterStudent()
+    private function convertResponseHeaderBagToParameterBag(ResponseHeaderBag $responseHeaderBag): ParameterBag
     {
-        $authService = $this->authService;
-        $student = $this->createMock(Student::class);
-        $student->expects($this->once())->method('setToken');
-        $student = $authService->registerStudent($student);
-        $this->assertInstanceOf(Student::class, $student);
-    }
+        $parameterBag = new ParameterBag();
 
-    public function testRememberStudent()
-    {
-        $authService = $this->authService;
-        $student = $this->createMock(Student::class);
-        $token = 'registration_token';
-        $student->method('getToken')->willReturn($token);
-        $response = $authService->rememberStudent($student, new Response());
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertTrue(
-            $this->assertResponseContainCookieWithKeyValue($response, $authService->getTokenKey(), $token)
-        );
-    }
-
-    private function assertResponseContainCookieWithKeyValue(Response $response, $key, $value): bool
-    {
-        $cookies = $response->headers->getCookies();
-
-        foreach ($cookies as $cookie) {
-            /** @var Cookie $cookie */
-            if ($cookie->getName() === $key && $cookie->getValue() === $value) {
-                return true;
-            }
+        foreach ($responseHeaderBag->getCookies() as $cookie) {
+            $parameterBag->set($cookie->getName(), $cookie->getValue());
         }
 
-        return false;
+        return $parameterBag;
     }
 
-    /**
-     * @expectedException \LogicException
-     */
-    public function testRememberNotRegisteredStudentThrowsException()
+    public function tearDown()
     {
-        $authService = $this->authService;
-        $student = $this->createMock(Student::class);
-        $student->method('getToken')->willReturn(null);
-        $authService->rememberStudent($student, new Response());
-    }
-
-    public function testUnregister()
-    {
-        $authService = $this->authService;
-        $cookie = new Cookie($authService->getTokenKey(), 'secret_token', strtotime('+10 years'));
-        $response = new Response();
-        $response->headers->setCookie($cookie);
-        $response = $authService->unregister($response);
-        $this->assertTrue(
-            $this->assertCookieTokenHasExpiryDateInThePast($response, $authService->getTokenKey())
-        );
-    }
-
-    private function assertCookieTokenHasExpiryDateInThePast(Response $response, $key): bool
-    {
-        $cookies = $response->headers->getCookies();
-
-        foreach ($cookies as $cookie) {
-            /** @var Cookie $cookie */
-            if ($cookie->getName() === $key) {
-                return $cookie->getExpiresTime() < time();
-            }
-        }
-
-        return false;
+        $this->pdo->rollBack();
     }
 }

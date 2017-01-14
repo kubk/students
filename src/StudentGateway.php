@@ -39,7 +39,7 @@ class StudentGateway
 
         if (null === $student->getId()) {
             $query = $this->pdo->prepare(sprintf('
-                INSERT INTO %s (`name`, `surname`, `email`, `gender`, `rating`, `group`, `token`)
+                INSERT INTO %s (name, surname, email, gender, rating, `group`, token)
                 VALUES (:name, :surname, :email, :gender, :rating, :group, :token)
             ', $this->table));
 
@@ -47,13 +47,13 @@ class StudentGateway
         } else {
             $query = $this->pdo->prepare(sprintf('
                 UPDATE %s
-                SET `name` = :name,
-                    `surname` = :surname,
-                    `email` = :email,
-                    `gender` = :gender,
-                    `rating` = :rating,
+                SET name = :name,
+                    surname = :surname,
+                    email = :email,
+                    gender = :gender,
+                    rating = :rating,
                     `group` = :group
-                WHERE `id` = %s
+                WHERE id = %s
             ', $this->table, $student->getId()));
 
             $query->execute($preparedStatementsParams);
@@ -73,7 +73,7 @@ class StudentGateway
         $query = $this->pdo->prepare("
             SELECT *
             FROM {$this->table}
-            WHERE CONCAT(`name`, ' ', `surname`, ' ', `group`, ' ', `rating`) LIKE :search
+            WHERE CONCAT(name, ' ', surname, ' ', `group`, ' ', rating) LIKE :search
             ORDER BY `{$column}` {$order}
             LIMIT :limit OFFSET :offset
         ");
@@ -92,7 +92,7 @@ class StudentGateway
         $query = $this->pdo->prepare("
             SELECT COUNT(id)
             FROM {$this->table}
-            WHERE CONCAT(`name`, ' ', `surname`, ' ', `group`, ' ', `rating`) LIKE :search
+            WHERE CONCAT(name, ' ', surname, ' ', `group`, ' ', rating) LIKE :search
         ");
         $query->execute([':search' => "%{$search}%"]);
 

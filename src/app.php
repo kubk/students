@@ -20,12 +20,13 @@ $app->register(new Silex\Provider\ValidatorServiceProvider(), [
 ]);
 
 $app->register(new Silex\Provider\FormServiceProvider());
+
 // Эти провайдеры нужны для дефолтных шаблонов твига
 $app->register(new Silex\Provider\LocaleServiceProvider());
 $app->register(new Silex\Provider\TranslationServiceProvider(), ['translator.domains' => []]);
 
 $app['uniqueEmailValidator'] = function ($app) {
-    return new \App\UniqueEmailValidator($app['studentGateway']);
+    return new \App\UniqueEmailValidator($app['studentGateway'], $app['authService']);
 };
 
 $app['studentGateway'] = function ($app) {

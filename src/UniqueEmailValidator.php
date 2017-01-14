@@ -14,16 +14,22 @@ class UniqueEmailValidator extends ConstraintValidator
      */
     private $studentGateway;
 
-    public function __construct(StudentGateway $studentGateway)
+    /**
+     * @var AuthService
+     */
+    private $authService;
+
+    public function __construct(StudentGateway $studentGateway, AuthService $authService)
     {
         $this->studentGateway = $studentGateway;
+        $this->authService    = $authService;
     }
 
     public function validate($value, Constraint $constraint)
     {
         $studentInDb = $this->studentGateway->findByEmail($value->getEmail());
 
-        if ($studentInDb && $studentInDb->getToken() !== $value->getToken()) {
+        if ($studentInDb && !$this->authService->studentsAreTheSame($studentInDb, $value)) {
             $this->context->buildViolation($constraint->getErrorMessage())
                 ->atPath('email')
                 ->setParameter('%email%', $value->getEmail())

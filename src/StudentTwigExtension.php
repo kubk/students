@@ -13,9 +13,6 @@ class StudentTwigExtension extends \Twig_Extension
      */
     private $urlGenerator;
 
-    /**
-     * @param UrlGenerator $urlGenerator Используется для генерации путей в шаблонах
-     */
     public function __construct(UrlGenerator $urlGenerator)
     {
         $this->urlGenerator = $urlGenerator;

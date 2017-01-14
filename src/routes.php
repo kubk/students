@@ -25,7 +25,7 @@ $app->get('/', function (Request $request) use ($app) {
 
     return $app['twig']->render('student-list.twig', [
         'students' => $students,
-        'isStudentRegistered' => (bool) $app['authService']->getRegisteredStudent($request),
+        'isStudentRegistered' => (bool) $app['authService']->getRegisteredStudent($request->cookies),
         'search' => $search,
         'notify' => $request->query->get('notify'),
         'paginator' => $paginator,
@@ -34,7 +34,7 @@ $app->get('/', function (Request $request) use ($app) {
 })->bind('student-list');
 
 $app->match('/form', function (Request $request) use ($app) {
-    $student = $app['authService']->getRegisteredStudent($request) ?: new Student();
+    $student = $app['authService']->getRegisteredStudent($request->cookies) ?: new Student();
     $form    = $app['form.factory']->createBuilder(StudentType::class, $student)->getForm();
 
     $form->handleRequest($request);
@@ -44,8 +44,8 @@ $app->match('/form', function (Request $request) use ($app) {
         $url = $app['url_generator']->generate('student-list', compact('notify'));
         $response = new RedirectResponse($url);
         if (!$isStudentRegistered) {
-            $student  = $app['authService']->registerStudent($form->getData());
-            $response = $app['authService']->rememberStudent($student, $response);
+            $student = $app['authService']->registerStudent($form->getData());
+            $response->headers = $app['authService']->rememberStudent($student, $response->headers);
         } else {
             $app['studentGateway']->save($form->getData());
         }
@@ -58,3 +58,9 @@ $app->match('/form', function (Request $request) use ($app) {
         'search' => '',
     ]);
 })->bind('form')->method('GET|POST');
+
+$app->get('/unregister', function (Request $request) use ($app) {
+    $response = new RedirectResponse($app['url_generator']->generate('student-list'));
+    $response->headers = $app['authService']->unregister($response->headers);
+    return $response;
+})->bind('unregister');

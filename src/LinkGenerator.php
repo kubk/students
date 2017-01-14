@@ -18,8 +18,7 @@ class LinkGenerator
         int $perPage,
         int $pageNumber,
         string $sortBy
-    )
-    {
+    ) {
         $this->search     = $search;
         $this->order      = $order;
         $this->perPage    = $perPage;
@@ -31,27 +30,28 @@ class LinkGenerator
     {
         $columnLink = $this->getColumnLink($columnName);
 
+        $newOrder = $this->order;
         $linkName = $columnName;
-        $order = $this->order;
-        if ($columnLink == $this->sortBy) {
+        if ($columnLink === $this->sortBy) {
             if ($this->order === 'ASC') {
                 $linkName .= ' &#9660';
-                $order = 'DESC';
+                $newOrder = 'DESC';
             } else {
                 $linkName .= ' &#9650';
-                $order = 'ASC';
+                $newOrder = 'ASC';
             }
         }
 
-        $url = http_build_query([
+        $query = http_build_query([
             'page_number' => $this->pageNumber,
             'search' => $this->search,
-            'order' => $order,
+            'order' => $newOrder,
             'per_page' => $this->perPage,
             'sort_by' => $columnLink,
         ]);
 
-        return "<a href='?{$url}'>{$linkName}</a>";
+        // TODO: change to array [?query => linkName]
+        return "<a href='?{$query}'>{$linkName}</a>";
     }
 
     private function getColumnLink(string $columnName): string
