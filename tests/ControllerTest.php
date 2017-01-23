@@ -25,15 +25,16 @@ class ControllerTest extends WebTestCase
         $formPage->typeRating($rating);
         $formPage->typeGender($gender);
         $formPage->typeGroup($group);
-        $formWithErrorCrawler = $formPage->submitForm($client);
 
         if (!$fieldsWithError) {
+            $formPage->submitForm($client);
             $this->assertTrue($client->getResponse()->isRedirect());
             $client->request('GET', '/logout');
             // Удостоверимся, что со старыми данными зарегистрироваться не выйдет, так как email занят
             $formPage->submitForm($client);
             $this->assertFalse($client->getResponse()->isRedirect());
         } else {
+            $formWithErrorCrawler = $formPage->submitForm($client);
             $formPage = new FormPageObject($formWithErrorCrawler);
             $this->assertTrue($formPage->checkFormHasErrorsInFields($fieldsWithError));
             $this->assertEquals(count($fieldsWithError), $formPage->getFormErrorsCount());
@@ -96,7 +97,7 @@ class ControllerTest extends WebTestCase
     public function testIndex()
     {
         $client = $this->createClient();
-        $crawler = $client->request('GET', '/');
+        $client->request('GET', '/');
         $this->assertTrue($client->getResponse()->isOk());
     }
 

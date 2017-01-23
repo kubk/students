@@ -29,12 +29,12 @@ for ($i = 0; $i < $studentsCount; $i++) {
         'gender'  => $gender,
         'email'   => $faker->email,
         'rating'  => $faker->numberBetween(Student::RATING_MIN, Student::RATING_MAX),
-        'group'   => $faker->regexify('[a-zA-Z]{1,3}\d{1,2}')
+        'group'   => $faker->regexify('[a-zA-Z]{1,3}\d{1,2}'),
     ]);
 
-    $authorizedStudent = $authService->registerStudent($student);
+    $authService->registerStudent($student);
     echo
-        $authorizedStudent->getName() . ' ' .
-        $authorizedStudent->getToken() . ' ' .
-        $authorizedStudent->getEmail(), PHP_EOL;
+        $student->getName() . ' ' .
+        $student->getToken() . ' ' .
+        $student->getEmail(), PHP_EOL;
 }

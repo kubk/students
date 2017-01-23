@@ -42,9 +42,7 @@ class LinkGenerator
             }
         }
 
-        $queryParams = $this->getQueryParams();
-        $queryParams['order'] = $newOrder;
-        $queryParams['sort_by'] = $columnLink;
+        $queryParams = $this->getQueryParamsWith(['order' => $newOrder, 'sort_by' => $columnLink]);
 
         return [
             'href' => '?' . http_build_query($queryParams),
@@ -71,21 +69,20 @@ class LinkGenerator
         return $map[$columnName];
     }
 
-    private function getQueryParams(): array
+    private function getQueryParamsWith(array $params): array
     {
-        return [
+        return array_merge([
             'page_number' => $this->pageNumber,
             'search' => $this->search,
             'order' => $this->order,
             'per_page' => $this->perPage,
             'sort_by' => $this->sortBy,
-        ];
+        ], $params);
     }
 
     public function getLinkForPage(int $pageNumber): string
     {
-        $queryParams = $this->getQueryParams();
-        $queryParams['page_number'] = $pageNumber;
+        $queryParams = $this->getQueryParamsWith(['page_number' => $pageNumber]);
         return '?' . http_build_query($queryParams);
     }
 }

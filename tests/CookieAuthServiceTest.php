@@ -44,7 +44,7 @@ class CookieAuthServiceTest extends TestCase
     public function testLoopback()
     {
         $authService = $this->authService;
-        $student = new Student($this->getNonexistentStudentArray());
+        $student = $this->getNonexistentStudent();
         $this->assertFalse($authService->isStudentRegistered($student));
 
         $authService->registerStudent($student);

@@ -17,15 +17,6 @@ class StudentGateway
         $this->pdo = $pdo;
     }
 
-    public function findAll(): array
-    {
-        $sql   = "SELECT * FROM {$this->table}";
-        $query = $this->pdo->query($sql);
-        $rows  = $query->fetchAll();
-
-        return array_map([$this, 'mapRowToObject'], $rows);
-    }
-
     public function save(Student $student)
     {
         $preparedStatementsParams = [

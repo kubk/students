@@ -8,15 +8,15 @@ use App\Student;
 
 trait StudentTestTrait
 {
-    protected function getNonexistentStudentArray(): array
+    protected function getNonexistentStudent(): Student
     {
-        return [
-            'name' => '',
-            'surname' => '',
+        return new Student([
+            'name' => 'Иван',
+            'surname' => 'Иванов',
             'email' => 'nonexistent@mail.ru',
             'gender' => Student::GENDER_MALE,
             'rating' => 1,
-            'group' => '',
-        ];
+            'group' => 'ИС25',
+        ]);
     }
 }
