@@ -4,24 +4,18 @@ use App\{Paginator, LinkGenerator, Student, StudentType};
 use Symfony\Component\HttpFoundation\{Request, RedirectResponse};
 
 $app->get('/', function (Request $request) use ($app) {
-    $search = $request->query->get('search', '');
+    $search     = $request->query->get('search', '');
     $pageNumber = $request->query->getInt('page_number', 1);
-    $perPage = $request->query->getInt('per_page', 5);
-    $sortBy = $request->query->get('sort_by', 'id');
-    $order = $request->query->get('order', 'ASC');
-    $studentsCount = $app['studentGateway']->count($search);
-
-    $paginator = new Paginator($studentsCount, $perPage, $pageNumber);
-
-    $students = $app['studentGateway']->findAllWith(
-        $search,
-        $sortBy,
-        $order,
-        $paginator->getOffset(),
-        $paginator->getPerPage()
-    );
+    $perPage    = $request->query->getInt('per_page', 5);
+    $sortBy     = $request->query->get('sort_by', 'id');
+    $order      = $request->query->get('order', 'ASC');
 
     $linkGenerator = new LinkGenerator($search, $order, $perPage, $pageNumber, $sortBy);
+    $paginator     = new Paginator($app['studentGateway']->count($search), $perPage, $pageNumber);
+
+    $students = $app['studentGateway']->findAllWith(
+        $search, $sortBy, $order, $paginator->getOffset(), $paginator->getPerPage()
+    );
 
     return $app['twig']->render('student-list.twig', [
         'students' => $students,
@@ -43,11 +37,12 @@ $app->match('/form', function (Request $request) use ($app) {
         $notify = ($isStudentRegistered) ? 'Информация обновлена!' : 'Добавлен новый студент!';
         $url = $app['url_generator']->generate('student-list', compact('notify'));
         $response = new RedirectResponse($url);
+        $student = $form->getData();
         if (!$isStudentRegistered) {
-            $student = $app['authService']->registerStudent($form->getData());
-            $response->headers = $app['authService']->rememberStudent($student, $response->headers);
+            $app['authService']->registerStudent($student);
+            $app['authService']->rememberStudent($student, $response->headers);
         } else {
-            $app['studentGateway']->save($form->getData());
+            $app['studentGateway']->save($student);
         }
         return $response;
     }
@@ -59,8 +54,8 @@ $app->match('/form', function (Request $request) use ($app) {
     ]);
 })->bind('form')->method('GET|POST');
 
-$app->get('/unregister', function (Request $request) use ($app) {
+$app->get('/logout', function () use ($app) {
     $response = new RedirectResponse($app['url_generator']->generate('student-list'));
-    $response->headers = $app['authService']->unregister($response->headers);
+    $app['authService']->logOut($response->headers);
     return $response;
-})->bind('unregister');
+})->bind('logout');

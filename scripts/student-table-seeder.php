@@ -8,7 +8,7 @@ use App\Student;
 $faker = Faker\Factory::create('ru_RU');
 $app = require __DIR__ . '/../src/app.php';
 
-/** @var \App\AuthService $authService */
+/** @var \App\CookieAuthService $authService */
 $authService = $app['authService'];
 
 $studentsCount = $argv[1] ?? 5;

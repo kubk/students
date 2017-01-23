@@ -6,7 +6,7 @@ namespace App;
 
 use Symfony\Component\HttpFoundation\{ParameterBag, Cookie, ResponseHeaderBag};
 
-class AuthService
+class CookieAuthService
 {
     /**
      * @var StudentGateway
@@ -18,18 +18,17 @@ class AuthService
         $this->gateway = $gateway;
     }
 
-    public function getRegisteredStudent(ParameterBag $parameterBag)
+    public function getRegisteredStudent(ParameterBag $cookieBag)
     {
-        $token = (string) $parameterBag->get('token');
+        $token = (string) $cookieBag->get('token');
         return $this->gateway->findByToken($token);
     }
 
-    public function registerStudent(Student $student): Student
+    public function registerStudent(Student $student)
     {
         $token = $this->generateRandomToken();
         $student->setToken($token);
         $this->gateway->save($student);
-        return $student;
     }
 
     private function generateRandomToken(): string
@@ -39,7 +38,7 @@ class AuthService
         return join('', $chars);
     }
 
-    public function rememberStudent(Student $student, ResponseHeaderBag $headers): ResponseHeaderBag
+    public function rememberStudent(Student $student, ResponseHeaderBag $headers)
     {
         if (!$this->isStudentRegistered($student)) {
             throw new \LogicException('Attempt to remember not registered student');
@@ -47,7 +46,6 @@ class AuthService
 
         $cookie = new Cookie('token', $student->getToken(), strtotime('+10 years'));
         $headers->setCookie($cookie);
-        return $headers;
     }
 
     public function isStudentRegistered(Student $student): bool
@@ -55,14 +53,8 @@ class AuthService
         return !! $student->getToken();
     }
 
-    public function studentsAreTheSame(Student $studentA, Student $studentB): bool
-    {
-        return $studentA->getToken() === $studentB->getToken();
-    }
-
-    public function unregister(ResponseHeaderBag $headers): ResponseHeaderBag
+    public function logOut(ResponseHeaderBag $headers)
     {
         $headers->clearCookie('token');
-        return $headers;
     }
 }

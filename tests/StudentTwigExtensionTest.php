@@ -70,9 +70,14 @@ class StudentTwigExtensionTest extends TestCase
 
     public function testSpecialCharactersConvertedToHtmlEntities()
     {
-        $result = $this->studentTwigExtension->markSearch("a'sd<sdfa>sdfsd", "a'sd");
-        $this->assertContains('&lt;', $result);
-        $this->assertContains('&gt;', $result);
-        $this->assertContains('&#039;', $result);
+        $search = 'a<s">dsdfsd';
+        $result = $this->studentTwigExtension->markSearch($search, '');
+        $this->assertEquals(html_entity_decode($result, ENT_QUOTES), $search);
+
+        $search = "a'<sdsdf&sd";
+        $result = $this->studentTwigExtension->markSearch($search, "a'<s");
+        $this->assertContains("'", html_entity_decode($result, ENT_QUOTES));
+        $this->assertContains("&", html_entity_decode($result, ENT_QUOTES));
+        $this->assertContains("<", html_entity_decode($result, ENT_QUOTES));
     }
 }

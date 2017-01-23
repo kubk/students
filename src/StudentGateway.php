@@ -133,4 +133,9 @@ class StudentGateway
             'gender' => $row['gender'],
         ]);
     }
+
+    public function studentsAreTheSame(Student $studentA, Student $studentB): bool
+    {
+        return $studentA->getToken() === $studentB->getToken();
+    }
 }

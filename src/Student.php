@@ -82,7 +82,7 @@ class Student
             new Constraint\Regex(['pattern' => '/^[^@]+@[^@]+$/']),
             new Constraint\Length(['max' => 60, 'maxMessage' => 'Максимальная длина почты - {{ limit }}']),
         ]);
-        $metadata->addConstraint(new UniqueEmail());
+        $metadata->addConstraint(new StudentEmailUnique());
     }
 
     public function getId()

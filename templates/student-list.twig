@@ -9,12 +9,12 @@
         <table class="table table-hover">
             <thead>
             <tr>
-                <th>{{ linkGenerator.getSortingLink('ID')|raw }}</th>
-                <th>{{ linkGenerator.getSortingLink('Имя')|raw }}</th>
-                <th>{{ linkGenerator.getSortingLink('Фамилия')|raw }}</th>
-                <th>{{ linkGenerator.getSortingLink('Группа')|raw }}</th>
-                <th>{{ linkGenerator.getSortingLink('Пол')|raw }}</th>
-                <th>{{ linkGenerator.getSortingLink('Рейтинг')|raw }}</th>
+                {% for column in ['ID', 'Имя', 'Фамилия', 'Группа', 'Пол', 'Рейтинг'] %}
+                    <th>
+                        {% set link = linkGenerator.getSortingLink(column) %}
+                        <a href="{{ link.href }}">{{ link.name|raw }}</a>
+                    </th>
+                {% endfor %}
             </tr>
             </thead>
             {% for student in students %}

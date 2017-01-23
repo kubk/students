@@ -3,7 +3,7 @@
 $app = new Silex\Application();
 
 $app->register(new Silex\Provider\CsrfServiceProvider());
-$app->register(new \Silex\Provider\TwigServiceProvider(), [
+$app->register(new Silex\Provider\TwigServiceProvider(), [
     'twig.path' => __DIR__ . '/../templates',
 ]);
 $app->extend('twig', function (Twig_Environment $twig, $app) {
@@ -15,18 +15,15 @@ $app['twig.form.templates'] = ['bootstrap_3_layout.html.twig'];
 
 $app->register(new Silex\Provider\ValidatorServiceProvider(), [
     'validator.validator_service_ids' => [
-        \App\UniqueEmailValidator::class => 'uniqueEmailValidator',
+        \App\StudentEmailUniqueValidator::class => 'studentEmailUniqueValidator',
     ]
 ]);
 
+$app->register(new \Silex\Provider\SessionServiceProvider());
 $app->register(new Silex\Provider\FormServiceProvider());
 
-// Эти провайдеры нужны для дефолтных шаблонов твига
-$app->register(new Silex\Provider\LocaleServiceProvider());
-$app->register(new Silex\Provider\TranslationServiceProvider(), ['translator.domains' => []]);
-
-$app['uniqueEmailValidator'] = function ($app) {
-    return new \App\UniqueEmailValidator($app['studentGateway'], $app['authService']);
+$app['studentEmailUniqueValidator'] = function ($app) {
+    return new \App\StudentEmailUniqueValidator($app['studentGateway']);
 };
 
 $app['studentGateway'] = function ($app) {
@@ -34,7 +31,7 @@ $app['studentGateway'] = function ($app) {
 };
 
 $app['authService'] = function ($app) {
-    return new \App\AuthService($app['studentGateway']);
+    return new \App\CookieAuthService($app['studentGateway']);
 };
 
 $app['pdo'] = function () {
@@ -45,9 +42,13 @@ $app['pdo'] = function () {
         $config['password'],
         [
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8', sql_mode='STRICT_ALL_TABLES'"
+            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8' COLLATE 'utf8_general_ci', sql_mode='STRICT_ALL_TABLES'"
         ]
     );
 };
+
+// Эти провайдеры нужны для дефолтных шаблонов твига
+$app->register(new Silex\Provider\LocaleServiceProvider());
+$app->register(new Silex\Provider\TranslationServiceProvider(), ['translator.domains' => []]);
 
 return $app;

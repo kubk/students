@@ -6,7 +6,7 @@ namespace App;
 
 use Symfony\Component\Validator\Constraint;
 
-class UniqueEmail extends Constraint
+class StudentEmailUnique extends Constraint
 {
     public function getErrorMessage()
     {

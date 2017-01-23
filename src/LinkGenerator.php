@@ -26,32 +26,30 @@ class LinkGenerator
         $this->sortBy     = $sortBy;
     }
 
-    public function getSortingLink(string $columnName): string
+    public function getSortingLink(string $columnName): array
     {
         $columnLink = $this->getColumnLink($columnName);
 
         $newOrder = $this->order;
-        $linkName = $columnName;
+        $arrow = '';
         if ($columnLink === $this->sortBy) {
             if ($this->order === 'ASC') {
-                $linkName .= ' &#9660';
+                $arrow = '&#9660';
                 $newOrder = 'DESC';
             } else {
-                $linkName .= ' &#9650';
+                $arrow = '&#9650';
                 $newOrder = 'ASC';
             }
         }
 
-        $query = http_build_query([
-            'page_number' => $this->pageNumber,
-            'search' => $this->search,
-            'order' => $newOrder,
-            'per_page' => $this->perPage,
-            'sort_by' => $columnLink,
-        ]);
+        $queryParams = $this->getQueryParams();
+        $queryParams['order'] = $newOrder;
+        $queryParams['sort_by'] = $columnLink;
 
-        // TODO: change to array [?query => linkName]
-        return "<a href='?{$query}'>{$linkName}</a>";
+        return [
+            'href' => '?' . http_build_query($queryParams),
+            'name' => "{$columnName} {$arrow}",
+        ];
     }
 
     private function getColumnLink(string $columnName): string
@@ -73,14 +71,21 @@ class LinkGenerator
         return $map[$columnName];
     }
 
-    public function getLinkForPage(int $pageNumber): string
+    private function getQueryParams(): array
     {
-        return '?' . http_build_query([
-            'page_number' => $pageNumber,
+        return [
+            'page_number' => $this->pageNumber,
             'search' => $this->search,
             'order' => $this->order,
             'per_page' => $this->perPage,
             'sort_by' => $this->sortBy,
-        ]);
+        ];
+    }
+
+    public function getLinkForPage(int $pageNumber): string
+    {
+        $queryParams = $this->getQueryParams();
+        $queryParams['page_number'] = $pageNumber;
+        return '?' . http_build_query($queryParams);
     }
 }

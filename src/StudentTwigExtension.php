@@ -26,10 +26,6 @@ class StudentTwigExtension extends \Twig_Extension
         ];
     }
 
-    /**
-     * Дефолтный фильтр replace не подходит, так как использует функцию str_replace,
-     * нам нужна регистронезависимая замена
-     */
     public function markSearch(string $input, string $search): string
     {
         // Обойдёмся без twig_escape_filter, для него нужны хаки: http://stackoverflow.com/questions/28097270/twig-how-can-i-manually-escape-inside-a-custom-function
@@ -47,7 +43,7 @@ class StudentTwigExtension extends \Twig_Extension
     private function wrapFound(array $matches): string
     {
         $found = $matches[1];
-        return "<b>{$found}</b>";
+        return "<mark>{$found}</mark>";
     }
 
     public function getGenderForConstant(string $constant): string
