@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests;
+namespace Tests\PageObject;
 
 use Symfony\Component\BrowserKit\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
-class FormPageObject
+class ProfileForm
 {
     /**
      * @var \Symfony\Component\DomCrawler\Form
@@ -28,7 +28,7 @@ class FormPageObject
         $this->form = $crawler->selectButton($this->formId)->form();
     }
 
-    public function submitForm(Client $client): Crawler
+    public function submit(Client $client): Crawler
     {
         return $client->submit($this->form);
     }

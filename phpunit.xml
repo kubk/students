@@ -2,6 +2,8 @@
 	bootstrap="./vendor/autoload.php"
     colors="true"
     verbose="true"
+    convertErrorsToExceptions="true"
+    stopOnFailure="true"
     >
     <php>
         <ini name="error_reporting" value="-1"/>

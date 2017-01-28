@@ -6,6 +6,8 @@ namespace Tests;
 
 use App\Student;
 use Silex\WebTestCase;
+use Tests\PageObject\LogOutForm;
+use Tests\PageObject\ProfileForm;
 
 // http://silex.sensiolabs.org/doc/2.0/testing.html#webtestcase
 class ControllerTest extends WebTestCase
@@ -18,26 +20,31 @@ class ControllerTest extends WebTestCase
         $client = $this->createClient();
         $crawler = $client->request('GET', '/form');
 
-        $formPage = new FormPageObject($crawler);
-        $formPage->typeName($name);
-        $formPage->typeSurname($surname);
-        $formPage->typeEmail($email);
-        $formPage->typeRating($rating);
-        $formPage->typeGender($gender);
-        $formPage->typeGroup($group);
+        $profileForm = new ProfileForm($crawler);
+        $profileForm->typeName($name);
+        $profileForm->typeSurname($surname);
+        $profileForm->typeEmail($email);
+        $profileForm->typeRating($rating);
+        $profileForm->typeGender($gender);
+        $profileForm->typeGroup($group);
 
-        if (!$fieldsWithError) {
-            $formPage->submitForm($client);
-            $this->assertTrue($client->getResponse()->isRedirect());
-            $client->request('GET', '/logout');
-            // Удостоверимся, что со старыми данными зарегистрироваться не выйдет, так как email занят
-            $formPage->submitForm($client);
-            $this->assertFalse($client->getResponse()->isRedirect());
+        if ($fieldsWithError) {
+            $formWithErrorCrawler = $profileForm->submit($client);
+            $profileForm = new ProfileForm($formWithErrorCrawler);
+            $this->assertTrue($profileForm->checkFormHasErrorsInFields($fieldsWithError));
+            $this->assertEquals(count($fieldsWithError), $profileForm->getFormErrorsCount());
         } else {
-            $formWithErrorCrawler = $formPage->submitForm($client);
-            $formPage = new FormPageObject($formWithErrorCrawler);
-            $this->assertTrue($formPage->checkFormHasErrorsInFields($fieldsWithError));
-            $this->assertEquals(count($fieldsWithError), $formPage->getFormErrorsCount());
+            $profileForm->submit($client);
+            $this->assertTrue($client->getResponse()->isRedirect());
+            $logOutForm = new LogOutForm($client->request('GET', '/form'));
+            $logOutForm->submit($client);
+            $this->assertTrue($client->getResponse()->isRedirect());
+
+            // Удостоверимся, что со старыми данными зарегистрироваться не выйдет, так как email занят
+            $formWithErrorCrawler = $profileForm->submit($client);
+            $profileForm = new ProfileForm($formWithErrorCrawler);
+            $this->assertTrue($profileForm->checkFormHasErrorsInFields(['email']));
+            $this->assertEquals(1, $profileForm->getFormErrorsCount());
         }
     }
 

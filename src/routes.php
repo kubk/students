@@ -1,6 +1,8 @@
 <?php
 
-use App\{Paginator, LinkGenerator, Student, StudentType};
+use App\Type\{StudentType, LogOutType};
+use App\{Paginator, LinkGenerator, Student};
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\{Request, RedirectResponse};
 
 $app->get('/', function (Request $request) use ($app) {
@@ -54,7 +56,12 @@ $app->match('/form', function (Request $request) use ($app) {
     ]);
 })->bind('form')->method('GET|POST');
 
-$app->get('/logout', function () use ($app) {
+$app->post('/logout', function (Request $request) use ($app) {
+    $logOutForm = $app['form.factory']->createBuilder(LogOutType::class)->getForm();
+    $logOutForm->handleRequest($request);
+    if (!$logOutForm->isValid()) {
+        throw new NotFoundHttpException();
+    }
     $response = new RedirectResponse($app['url_generator']->generate('student-list'));
     $app['authService']->logOut($response->headers);
     return $response;

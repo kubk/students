@@ -8,6 +8,8 @@ $app->register(new Silex\Provider\TwigServiceProvider(), [
 ]);
 $app->extend('twig', function (Twig_Environment $twig, $app) {
     $twig->addExtension(new \App\StudentTwigExtension($app['url_generator']));
+    $logOutForm = $app['form.factory']->createBuilder(\App\Type\LogOutType::class)->getForm()->createView();
+    $twig->addGlobal('logOutForm', $logOutForm);
     return $twig;
 });
 
