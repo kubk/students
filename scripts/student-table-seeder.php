@@ -6,6 +6,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Student;
 
 $faker = Faker\Factory::create('ru_RU');
+$config = require __DIR__ . '/../config/config_app.php';
 $app = require __DIR__ . '/../src/app.php';
 
 /** @var \App\CookieAuthService $authService */

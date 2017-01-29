@@ -27,6 +27,7 @@ class CookieAuthServiceTest extends TestCase
 
     public function setUp()
     {
+        $config = require __DIR__ . '/../config/config_tests.php';
         $app = require __DIR__ . '/../src/app.php';
         $this->pdo = $app['pdo'];
         $this->pdo->beginTransaction();

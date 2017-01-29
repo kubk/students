@@ -92,6 +92,7 @@ class ControllerTest extends WebTestCase
 
     public function createApplication()
     {
+        $config = require __DIR__ . '/../config/config_tests.php';
         $app = require __DIR__ . '/../src/app.php';
         $app['debug'] = true;
         unset($app['exception_handler']);

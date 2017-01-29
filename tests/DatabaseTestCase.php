@@ -15,8 +15,8 @@ abstract class DatabaseTestCase extends \PHPUnit_Extensions_Database_TestCase
     {
         if ($this->connection === null) {
             if (!self::$pdo) {
-                $config = require __DIR__ . '/../config.php';
-                $dsn = "mysql:host={$config['host']};dbname={$config['test_dbname']}";
+                $config = require __DIR__ . '/../config/config_tests.php';
+                $dsn = "mysql:host={$config['host']};dbname={$config['dbname']}";
                 self::$pdo = new \PDO($dsn, $config['username'], $config['password']);
             }
             $this->connection = $this->createDefaultDBConnection(self::$pdo);

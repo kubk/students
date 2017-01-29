@@ -36,8 +36,7 @@ $app['authService'] = function ($app) {
     return new \App\CookieAuthService($app['studentGateway']);
 };
 
-$app['pdo'] = function () {
-    $config = require __DIR__ . '/../config.php';
+$app['pdo'] = function () use ($config) {
     return new \PDO(
         "mysql:host={$config['host']};dbname={$config['dbname']};charset=utf8",
         $config['username'],
