@@ -1,0 +1,10 @@
+form.navbar-left {
+    padding: 0;
+}
+
+@media (max-width: 470px) {
+    th:nth-child(5n+1),
+    td:nth-child(5n+1) {
+        display: none;
+    }
+}

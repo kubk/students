@@ -2,34 +2,49 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="vendor/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/students.css">
+    <script src="vendor/js/jquery.min.js"></script>
+    <script src="vendor/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="container">
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="{{ path_to('student-list') }}">Главная</a>
-                <a class="navbar-brand" href="{{ path_to('form') }}">{{ isStudentRegistered ? 'Обновить профиль' : 'Зарегистрироваться' }}</a>
-                {% if isStudentRegistered %}
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ path_to('student-list') }}">Студенты</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <form class="navbar-form" action="{{ path_to('logout') }}" method="POST">
+                    <li>
+                        <a href="{{ path_to('form') }}">{{ isStudentRegistered ? 'Обновить профиль' : 'Зарегистрироваться' }}</a>
+                    </li>
+                </ul>
+                {% if isStudentRegistered %}
+                    <form class="navbar-form navbar-left" method="POST" action="{{ path_to('logout') }}">
                         {{ form_widget(logOutForm) }}
                     </form>
-                </ul>
                 {% endif %}
-            </div>
-            <ul class="nav navbar-nav navbar-right">
-                <form class="navbar-form navbar-left" role="search" action="{{ path_to('student-list') }}" method="get">
+                <form class="navbar-form navbar-right" action="{{ path_to('student-list') }}" method="get">
                     <div class="form-group">
-                        <input type="search" name="search" class="form-control" placeholder="Найти студента" value="{{ search }}">
+                        <input type="text" name="search" class="form-control" placeholder="Найти студента"
+                               value="{{ search }}">
                     </div>
                     <button type="submit" class="btn btn-default">Поиск</button>
                 </form>
-            </ul>
+            </div>
         </div>
     </nav>
+
     {% block body %}{% endblock %}
 </div>
 </body>
