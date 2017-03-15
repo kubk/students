@@ -10,6 +10,7 @@ class StudentGateway
      * @var \PDO
      */
     private $pdo;
+
     private $table = 'students';
 
     public function __construct(\PDO $pdo)
@@ -30,7 +31,7 @@ class StudentGateway
 
         if (null === $student->getId()) {
             $query = $this->pdo->prepare(sprintf('
-                INSERT INTO %s (name, surname, email, gender, rating, `group`, token)
+                INSERT INTO %s (name, surname, email, gender, rating, "group", token)
                 VALUES (:name, :surname, :email, :gender, :rating, :group, :token)
             ', $this->table));
 
@@ -43,7 +44,7 @@ class StudentGateway
                     email = :email,
                     gender = :gender,
                     rating = :rating,
-                    `group` = :group
+                    "group" = :group
                 WHERE id = %s
             ', $this->table, $student->getId()));
 
@@ -64,8 +65,8 @@ class StudentGateway
         $query = $this->pdo->prepare("
             SELECT *
             FROM {$this->table}
-            WHERE CONCAT(name, ' ', surname, ' ', `group`, ' ', rating) LIKE :search
-            ORDER BY `{$column}` {$order}
+            WHERE CONCAT(name, ' ', surname, ' ', \"group\", ' ', rating) ILIKE :search
+            ORDER BY \"{$column}\" {$order}
             LIMIT :limit OFFSET :offset
         ");
 
@@ -83,7 +84,7 @@ class StudentGateway
         $query = $this->pdo->prepare("
             SELECT COUNT(id)
             FROM {$this->table}
-            WHERE CONCAT(name, ' ', surname, ' ', `group`, ' ', rating) LIKE :search
+            WHERE CONCAT(name, ' ', surname, ' ', \"group\", ' ', rating) ILIKE :search
         ");
         $query->execute([':search' => "%{$search}%"]);
 
@@ -130,3 +131,4 @@ class StudentGateway
         return $studentA->getToken() === $studentB->getToken();
     }
 }
+

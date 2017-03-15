@@ -38,12 +38,11 @@ $app['authService'] = function ($app) {
 
 $app['pdo'] = function () use ($config) {
     return new \PDO(
-        "mysql:host={$config['host']};dbname={$config['dbname']};charset=utf8",
+        "pgsql:host={$config['host']};dbname={$config['dbname']}",
         $config['username'],
         $config['password'],
         [
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8' COLLATE 'utf8_general_ci', sql_mode='STRICT_ALL_TABLES'"
         ]
     );
 };
