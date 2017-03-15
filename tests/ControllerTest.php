@@ -9,7 +9,10 @@ use Silex\WebTestCase;
 use Tests\PageObject\LogOutForm;
 use Tests\PageObject\ProfileForm;
 
-// http://silex.sensiolabs.org/doc/2.0/testing.html#webtestcase
+/**
+ * @see http://silex.sensiolabs.org/doc/2.0/testing.html#webtestcase
+ * @see https://github.com/silexphp/Silex/blob/master/src/Silex/WebTestCase.php
+ */
 class ControllerTest extends WebTestCase
 {
     /**
@@ -36,6 +39,8 @@ class ControllerTest extends WebTestCase
         } else {
             $profileForm->submit($client);
             $this->assertTrue($client->getResponse()->isRedirect());
+
+            // Выход
             $logOutForm = new LogOutForm($client->request('GET', '/form'));
             $logOutForm->submit($client);
             $this->assertTrue($client->getResponse()->isRedirect());
@@ -94,12 +99,11 @@ class ControllerTest extends WebTestCase
     {
         $config = require __DIR__ . '/../config/config_tests.php';
         $app = require __DIR__ . '/../src/app.php';
-        $app['debug'] = true;
-        unset($app['exception_handler']);
         $app['session.test'] = true;
         $app['pdo']->beginTransaction();
+        $app['pdo']->exec(file_get_contents(__DIR__ . '/../create-students-table.sql'));
         require __DIR__ . '/../src/routes.php';
-        return $this->app = $app;
+        return $app;
     }
 
     public function testIndex()

@@ -7,7 +7,9 @@ namespace Tests;
 use App\Student;
 use App\StudentGateway;
 
-class StudentGatewayTest extends DatabaseTestCase
+// https://phpunit.de/manual/current/en/database.html
+// Tip: Use your own Abstract Database TestCase
+class StudentGatewayTest extends \PHPUnit_Extensions_Database_TestCase
 {
     use StudentTestTrait;
 
@@ -16,15 +18,36 @@ class StudentGatewayTest extends DatabaseTestCase
      */
     private $studentGateway;
 
+    /**
+     * @var \PDO
+     */
+    private $pdo;
+
+    /**
+     * @var \PHPUnit_Extensions_Database_DB_IDatabaseConnection
+     */
+    private $connection;
+
     public function setUp()
     {
+        $config = require __DIR__ . '/../config/config_tests.php';
+        $app = require __DIR__ . '/../src/app.php';
+        $this->pdo = $app['pdo'];
+        $this->pdo->beginTransaction();
+        $this->studentGateway = new StudentGateway($this->pdo);
+        $this->connection = $this->createDefaultDBConnection($this->pdo);
         parent::setUp();
-        $this->studentGateway = new StudentGateway(self::$pdo);
     }
 
     protected function getDataSet()
     {
         return $this->createXMLDataSet(__DIR__ . '/fixtures/students-seed.xml');
+    }
+
+    protected function getConnection(): \PHPUnit_Extensions_Database_DB_IDatabaseConnection
+    {
+        $this->pdo->exec(file_get_contents(__DIR__ . '/../create-students-table.sql'));
+        return $this->connection;
     }
 
     public function testCount()
@@ -82,9 +105,8 @@ class StudentGatewayTest extends DatabaseTestCase
         ];
     }
 
-    // https://github.com/sebastianbergmann/phpunit/issues/308
-    protected function getTearDownOperation()
+    public function tearDown()
     {
-        return \PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
+        $this->pdo->rollBack();
     }
 }
