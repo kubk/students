@@ -1,7 +1,5 @@
 .idea
 vendor/
-public/css
-public/fonts
-POST
-config.php
+public/vendor
 push-to-github.sh
+push-to-heroku.sh
