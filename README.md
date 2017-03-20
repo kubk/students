@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/kubk/students.svg?branch=master)](https://travis-ci.org/kubk/students)
+
 ### To install:
 ```sh
 git clone https://github.com/kubk/students.git

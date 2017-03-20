@@ -2,7 +2,7 @@
 
 return [
     'host' => 'localhost',
-    'dbname' => 'test_students',
-    'username' => '',
-    'password' => '',
+    'dbname' => 'students_test',
+    'username' => 'postgres',
+    'password' => 'abcd',
 ];
