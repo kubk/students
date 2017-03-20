@@ -31,6 +31,7 @@ class CookieAuthServiceTest extends TestCase
         $app = require __DIR__ . '/../src/app.php';
         $this->pdo = $app['pdo'];
         $this->pdo->beginTransaction();
+        $this->pdo->exec(file_get_contents(__DIR__ . '/../create-students-table.sql'));
         $studentGateway = new StudentGateway($this->pdo);
         $this->authService = new CookieAuthService($studentGateway);
     }
