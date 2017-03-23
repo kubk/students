@@ -1,6 +1,8 @@
-[![Build Status](https://travis-ci.org/kubk/students.svg?branch=master)](https://travis-ci.org/kubk/students)
+# kubk/students [![Build Status](https://travis-ci.org/kubk/students.svg?branch=master)](https://travis-ci.org/kubk/students)
 
-### To install:
+Simple CRUD/Auth app to get familiar with Symfony components and Unit/Functional testing.
+
+## To install
 ```sh
 git clone https://github.com/kubk/students.git
 composer install
@@ -13,9 +15,9 @@ Run app using PHP's built-in web server:
 php -S localhost:8001 -t public
 ```
 
-### Demo:
+## Demo
 Heroku demo: https://boiling-brook-29265.herokuapp.com/
 
-### Testing:
+## Testing
 1. Create a test database and edit connection params in config/config_test.php
 2. Run tests via ```phpunit```
