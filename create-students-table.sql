@@ -13,7 +13,11 @@ CREATE TABLE students (
   rating  INT          NOT NULL,
   token   VARCHAR(255) NOT NULL,
   CONSTRAINT email UNIQUE (email),
+  CONSTRAINT email CHECK (email ~* '^[^@]+@[^@]+$'),
   CONSTRAINT token UNIQUE (token),
+  CONSTRAINT name CHECK (name ~* '^[-а-яёa-zА-ЯЁA-Z\s]{1,20}$'),
+  CONSTRAINT surname CHECK (surname ~* '^[-''а-яёa-zА-ЯЁA-Z\s]{1,20}$'),
+  CONSTRAINT "group" CHECK ("group" ~* '^[а-яёa-zА-ЯЁA-Z0-9]{2,5}$'),
   CONSTRAINT rating_constraint CHECK (rating <= 200 AND rating >= 0)
 );
 
