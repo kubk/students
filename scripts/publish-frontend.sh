@@ -1,6 +1,8 @@
 #!/bin/bash
 
-mkdir public/vendor public/vendor/{css,js}
+set -e
+
+mkdir -p public/vendor/{css,js}
 
 cp -R `pwd`/vendor/twbs/bootstrap/dist/css/bootstrap.min.css public/vendor/css/bootstrap.min.css
 cp -R `pwd`/vendor/twbs/bootstrap/dist/js/bootstrap.min.js public/vendor/js/bootstrap.min.js
