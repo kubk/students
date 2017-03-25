@@ -16,21 +16,29 @@ class StudentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
-            ->add('surname')
+            ->add('name', null, [
+                'label' => 'Имя',
+            ])
+            ->add('surname', null, [
+                'label' => 'Фамилия',
+            ])
             ->add('email')
             ->add('gender', ChoiceType::class, [
                 'choices' => [
-                    'Male' => Student::GENDER_MALE,
-                    'Female' => Student::GENDER_FEMALE,
-                ]
+                    'Мужской' => Student::GENDER_MALE,
+                    'Женский' => Student::GENDER_FEMALE,
+                ],
+                'label' => 'Пол',
             ])
-            ->add('group')
+            ->add('group', null, [
+                'label' => 'Группа',
+            ])
             ->add('rating', IntegerType::class, [
                 'attr' => [
                     'min' => Student::RATING_MIN,
                     'max' => Student::RATING_MAX,
-                ]
+                ],
+                'label' => 'Рейтинг',
             ])
             ->add('submit', SubmitType::class, [
                 'attr' => [
