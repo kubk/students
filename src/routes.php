@@ -36,7 +36,7 @@ $app->match('/form', function (Request $request) use ($app) {
     $form->handleRequest($request);
     $isStudentRegistered = $app['authService']->isStudentRegistered($student);
     if ($form->isSubmitted() && $form->isValid()) {
-        $notify = ($isStudentRegistered) ? 'Информация обновлена!' : 'Добавлен новый студент!';
+        $notify = ($isStudentRegistered) ? 'edited' : 'registered';
         $url = $app['url_generator']->generate('student-list', compact('notify'));
         $response = new RedirectResponse($url);
         $student = $form->getData();

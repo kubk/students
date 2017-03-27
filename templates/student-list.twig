@@ -1,8 +1,10 @@
 {% extends 'base.twig' %}
 {% block title %}Список студентов{% endblock %}
 {% block body %}
-    {% if notify %}
-        <div class="alert alert-info">{{ notify }}</div>
+    {% if notify == 'registered' %}
+        <div class="alert alert-info">Добавлен новый студент!</div>
+    {% elseif notify == 'edited' %}
+        <div class="alert alert-info">Информация обновлена!</div>
     {% endif %}
 
     {% if students %}
