@@ -11,8 +11,6 @@ class StudentGateway
      */
     private $pdo;
 
-    private $table = 'students';
-
     public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
@@ -30,25 +28,25 @@ class StudentGateway
         ];
 
         if (null === $student->getId()) {
-            $query = $this->pdo->prepare(sprintf('
-                INSERT INTO %s (name, surname, email, gender, rating, "group", token)
+            $query = $this->pdo->prepare('
+                INSERT INTO students (name, surname, email, gender, rating, "group", token)
                 VALUES (:name, :surname, :email, :gender, :rating, :group, :token)
-            ', $this->table));
+            ');
 
             $query->execute(array_merge($preparedStatementsParams, [':token' => $student->getToken()]));
         } else {
-            $query = $this->pdo->prepare(sprintf('
-                UPDATE %s
+            $query = $this->pdo->prepare('
+                UPDATE students
                 SET name = :name,
                     surname = :surname,
                     email = :email,
                     gender = :gender,
                     rating = :rating,
                     "group" = :group
-                WHERE id = %s
-            ', $this->table, $student->getId()));
+                WHERE id = :id
+            ');
 
-            $query->execute($preparedStatementsParams);
+            $query->execute(array_merge($preparedStatementsParams, [':id' => $student->getId()]));
         }
     }
 
@@ -64,7 +62,7 @@ class StudentGateway
 
         $query = $this->pdo->prepare("
             SELECT *
-            FROM {$this->table}
+            FROM students
             WHERE CONCAT(name, ' ', surname, ' ', \"group\", ' ', rating) ILIKE :search
             ORDER BY \"{$column}\" {$order}
             LIMIT :limit OFFSET :offset
@@ -83,7 +81,7 @@ class StudentGateway
     {
         $query = $this->pdo->prepare("
             SELECT COUNT(id)
-            FROM {$this->table}
+            FROM students
             WHERE CONCAT(name, ' ', surname, ' ', \"group\", ' ', rating) ILIKE :search
         ");
         $query->execute([':search' => "%{$search}%"]);
@@ -103,7 +101,7 @@ class StudentGateway
 
     private function findByColumn(string $column, $columnValue)
     {
-        $sql   = "SELECT * FROM {$this->table} WHERE {$column} = :columnValue";
+        $sql   = "SELECT * FROM students WHERE {$column} = :columnValue";
         $query = $this->pdo->prepare($sql);
         $query->execute([':columnValue' => $columnValue]);
 
