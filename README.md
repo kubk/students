@@ -17,6 +17,7 @@ php -S localhost:8001 -t public
 
 ## Demo
 Heroku demo: https://boiling-brook-29265.herokuapp.com/
+> The app is hosted on a free Heroku dyno, so it need some time to wake up.
 
 ## Testing
 1. Create a test database and edit connection params in config/config_test.php
