@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use App\StudentTwigExtension;
 use PHPUnit\Framework\TestCase;
+use App\Service\StudentTwigExtension;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class StudentTwigExtensionTest extends TestCase

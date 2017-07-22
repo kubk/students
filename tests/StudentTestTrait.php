@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use App\Student;
+use App\Entity\Student;
 
 trait StudentTestTrait
 {

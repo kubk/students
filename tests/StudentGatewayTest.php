@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use App\Student;
-use App\StudentGateway;
-
 // https://phpunit.de/manual/current/en/database.html
 // Tip: Use your own Abstract Database TestCase
+use App\Entity\Student;
+use App\Service\StudentGateway;
+
 class StudentGatewayTest extends \PHPUnit_Extensions_Database_TestCase
 {
     use StudentTestTrait;
@@ -44,7 +44,7 @@ class StudentGatewayTest extends \PHPUnit_Extensions_Database_TestCase
         return $this->createXMLDataSet(__DIR__ . '/fixtures/students-seed.xml');
     }
 
-    protected function getConnection(): \PHPUnit_Extensions_Database_DB_IDatabaseConnection
+    protected function getConnection()
     {
         $this->pdo->exec(file_get_contents(__DIR__ . '/../create-students-table.sql'));
         return $this->connection;

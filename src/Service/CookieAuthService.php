@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Service;
 
+use App\Entity\Student;
 use Symfony\Component\HttpFoundation\{ParameterBag, Cookie, ResponseHeaderBag};
 
 class CookieAuthService

@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Service;
+
+use App\Entity\Student;
 
 class StudentGateway
 {
@@ -122,11 +124,6 @@ class StudentGateway
             'token' => $row['token'],
             'gender' => $row['gender'],
         ]);
-    }
-
-    public function studentsAreTheSame(Student $studentA, Student $studentB): bool
-    {
-        return $studentA->getToken() === $studentB->getToken();
     }
 }
 

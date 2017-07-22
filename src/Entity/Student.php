@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Entity;
 
+use App\Validation\StudentEmailUnique;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints as Constraint;
 
@@ -163,5 +164,10 @@ class Student
     public function setToken($token)
     {
         $this->token = $token;
+    }
+
+    public function isEqualTo(Student $student): bool
+    {
+        return $this->token === $student->getToken();
     }
 }

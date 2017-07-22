@@ -1,9 +1,10 @@
 <?php
 
-use App\Type\{StudentType, LogOutType};
-use App\{Paginator, LinkGenerator, Student};
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Entity\Student;
+use App\Helper\{Paginator, LinkGenerator};
+use App\FormType\{StudentType, LogOutType};
 use Symfony\Component\HttpFoundation\{Request, RedirectResponse};
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 $app->get('/', function (Request $request) use ($app) {
     $search     = $request->query->get('search', '');

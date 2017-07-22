@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Type;
+namespace App\FormType;
 
-use App\Student;
+use App\Entity\Student;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

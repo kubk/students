@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Validation;
 
+use App\Service\StudentGateway;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -23,7 +24,7 @@ class StudentEmailUniqueValidator extends ConstraintValidator
     {
         $studentInDb = $this->studentGateway->findByEmail($value->getEmail());
 
-        if ($studentInDb && !$this->studentGateway->studentsAreTheSame($studentInDb, $value)) {
+        if ($studentInDb && !$studentInDb->isEqualTo($value)) {
             $this->context->buildViolation($constraint->getErrorMessage())
                 ->atPath('email')
                 ->setParameter('%email%', $value->getEmail())

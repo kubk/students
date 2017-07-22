@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use App\Student;
 use Silex\WebTestCase;
-use Tests\PageObject\LogOutForm;
-use Tests\PageObject\ProfileForm;
+use App\Entity\Student;
+use Tests\PageObject\{LogOutForm, ProfileForm};
 
 /**
  * @see http://silex.sensiolabs.org/doc/2.0/testing.html#webtestcase

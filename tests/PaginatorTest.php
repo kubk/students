@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use App\Paginator;
+use App\Helper\Paginator;
 use PHPUnit\Framework\TestCase;
 
 class PaginatorTest extends TestCase

@@ -20,6 +20,7 @@ class ProfileForm
     private $crawler;
 
     private $formId = 'student_submit';
+
     private $errorsClass = '.has-error';
 
     public function __construct(Crawler $crawler)

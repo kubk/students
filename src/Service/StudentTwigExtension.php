@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Service;
 
+use App\Entity\Student;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class StudentTwigExtension extends \Twig_Extension
@@ -28,7 +29,8 @@ class StudentTwigExtension extends \Twig_Extension
 
     public function markSearch(string $input, string $search): string
     {
-        // Обойдёмся без twig_escape_filter, для него нужны хаки: http://stackoverflow.com/questions/28097270/twig-how-can-i-manually-escape-inside-a-custom-function
+        // Обойдёмся без twig_escape_filter, для него нужны хаки:
+        // http://stackoverflow.com/questions/28097270/twig-how-can-i-manually-escape-inside-a-custom-function
         $input = htmlspecialchars($input, ENT_QUOTES);
         $search = htmlspecialchars($search, ENT_QUOTES);
 
@@ -51,7 +53,7 @@ class StudentTwigExtension extends \Twig_Extension
         switch ($constant) {
             case Student::GENDER_FEMALE: return 'Женский';
             case Student::GENDER_MALE: return 'Мужской';
-            default: throw new \Exception("Пол не определён");
+            default: throw new \Exception('Undefined gender');
         }
     }
 
