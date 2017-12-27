@@ -1,5 +1,7 @@
 # kubk/students [![Build Status](https://travis-ci.org/kubk/students.svg?branch=master)](https://travis-ci.org/kubk/students)
 
+Junior PHP test task: https://github.com/codedokode/pasta/blob/master/student-list.md
+
 Simple CRUD/Auth app to get familiar with Symfony components and Unit/Functional testing.
 
 ## To install
