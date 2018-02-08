@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Tests;
 
 use App\Entity\Student;
+use App\Service\CookieAuthService;
+use App\Service\StudentGateway;
 use PHPUnit\Framework\TestCase;
-use App\Service\{StudentGateway, CookieAuthService};
-use Symfony\Component\HttpFoundation\{ParameterBag, ResponseHeaderBag};
+use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class CookieAuthServiceTest extends TestCase
 {
@@ -25,11 +27,11 @@ class CookieAuthServiceTest extends TestCase
 
     public function setUp()
     {
-        $config = require __DIR__ . '/../config/config_tests.php';
-        $app = require __DIR__ . '/../src/app.php';
+        $config = require __DIR__.'/../config/config_tests.php';
+        $app = require __DIR__.'/../src/app.php';
         $this->pdo = $app['pdo'];
         $this->pdo->beginTransaction();
-        $this->pdo->exec(file_get_contents(__DIR__ . '/../create-students-table.sql'));
+        $this->pdo->exec(file_get_contents(__DIR__.'/../create-students-table.sql'));
         $studentGateway = new StudentGateway($this->pdo);
         $this->authService = new CookieAuthService($studentGateway);
     }

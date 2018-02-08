@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Silex\WebTestCase;
 use App\Entity\Student;
-use Tests\PageObject\{LogOutForm, ProfileForm};
+use Silex\WebTestCase;
+use Tests\PageObject\LogOutForm;
+use Tests\PageObject\ProfileForm;
 
 /**
  * @see http://silex.sensiolabs.org/doc/2.0/testing.html#webtestcase
@@ -62,7 +63,7 @@ class ControllerTest extends WebTestCase
                 Student::GENDER_MALE,
                 'it23',
                 200,
-                'Поля с ошибкой' => []
+                'Поля с ошибкой' => [],
             ],
             'Неправильный email, слишком большой рейтинг' => [
                 'Иван',
@@ -71,7 +72,7 @@ class ControllerTest extends WebTestCase
                 Student::GENDER_MALE,
                 'it23',
                 999999,
-                'Поля с ошибкой' => ['email', 'rating']
+                'Поля с ошибкой' => ['email', 'rating'],
             ],
             'Слишком длинное имя, фамилия содержит недопустимые символы' => [
                 str_repeat('too_long_name', 100),
@@ -80,7 +81,7 @@ class ControllerTest extends WebTestCase
                 Student::GENDER_MALE,
                 'it23',
                 200,
-                'Поля с ошибкой' => ['name', 'surname']
+                'Поля с ошибкой' => ['name', 'surname'],
             ],
             'Невалидное имя группы, рейтинг не может быть отрицательным' => [
                 'Иван',
@@ -89,19 +90,20 @@ class ControllerTest extends WebTestCase
                 Student::GENDER_FEMALE,
                 'invalid_group_name',
                 -2,
-                'Поля с ошибкой' => ['group', 'rating']
+                'Поля с ошибкой' => ['group', 'rating'],
             ],
         ];
     }
 
     public function createApplication()
     {
-        $config = require __DIR__ . '/../config/config_tests.php';
-        $app = require __DIR__ . '/../src/app.php';
+        $config = require __DIR__.'/../config/config_tests.php';
+        $app = require __DIR__.'/../src/app.php';
         $app['session.test'] = true;
         $app['pdo']->beginTransaction();
-        $app['pdo']->exec(file_get_contents(__DIR__ . '/../create-students-table.sql'));
-        require __DIR__ . '/../src/routes.php';
+        $app['pdo']->exec(file_get_contents(__DIR__.'/../create-students-table.sql'));
+        require __DIR__.'/../src/routes.php';
+
         return $app;
     }
 

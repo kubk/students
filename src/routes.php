@@ -1,38 +1,41 @@
 <?php
 
 use App\Entity\Student;
-use App\Helper\{Paginator, LinkGenerator};
-use App\FormType\{StudentType, LogOutType};
-use Symfony\Component\HttpFoundation\{Request, RedirectResponse};
+use App\FormType\LogOutType;
+use App\FormType\StudentType;
+use App\Helper\LinkGenerator;
+use App\Helper\Paginator;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 $app->get('/', function (Request $request) use ($app) {
-    $search     = $request->query->get('search', '');
+    $search = $request->query->get('search', '');
     $pageNumber = $request->query->getInt('page_number', 1);
-    $perPage    = $request->query->getInt('per_page', 5);
-    $sortBy     = $request->query->get('sort_by', 'id');
-    $order      = $request->query->get('order', 'ASC');
+    $perPage = $request->query->getInt('per_page', 5);
+    $sortBy = $request->query->get('sort_by', 'id');
+    $order = $request->query->get('order', 'ASC');
 
     $linkGenerator = new LinkGenerator($search, $order, $perPage, $pageNumber, $sortBy);
-    $paginator     = new Paginator($app['studentGateway']->count($search), $perPage, $pageNumber);
+    $paginator = new Paginator($app['studentGateway']->count($search), $perPage, $pageNumber);
 
     $students = $app['studentGateway']->findAllWith(
         $search, $sortBy, $order, $paginator->getOffset(), $paginator->getPerPage()
     );
 
     return $app['twig']->render('student-list.twig', [
-        'students' => $students,
+        'students'            => $students,
         'isStudentRegistered' => (bool) $app['authService']->getRegisteredStudent($request->cookies),
-        'search' => $search,
-        'notify' => $request->query->get('notify'),
-        'paginator' => $paginator,
-        'linkGenerator' => $linkGenerator
+        'search'              => $search,
+        'notify'              => $request->query->get('notify'),
+        'paginator'           => $paginator,
+        'linkGenerator'       => $linkGenerator,
     ]);
 })->bind('student-list');
 
 $app->match('/form', function (Request $request) use ($app) {
     $student = $app['authService']->getRegisteredStudent($request->cookies) ?: new Student();
-    $form    = $app['form.factory']->createBuilder(StudentType::class, $student)->getForm();
+    $form = $app['form.factory']->createBuilder(StudentType::class, $student)->getForm();
 
     $form->handleRequest($request);
     $isStudentRegistered = $app['authService']->isStudentRegistered($student);
@@ -47,13 +50,14 @@ $app->match('/form', function (Request $request) use ($app) {
         } else {
             $app['studentGateway']->save($student);
         }
+
         return $response;
     }
 
     return $app['twig']->render('form.twig', [
-        'form' => $form->createView(),
+        'form'                => $form->createView(),
         'isStudentRegistered' => $isStudentRegistered,
-        'search' => '',
+        'search'              => '',
     ]);
 })->bind('form')->method('GET|POST');
 
@@ -65,5 +69,6 @@ $app->post('/logout', function (Request $request) use ($app) {
     }
     $response = new RedirectResponse($app['url_generator']->generate('student-list'));
     $app['authService']->logOut($response->headers);
+
     return $response;
 })->bind('logout');

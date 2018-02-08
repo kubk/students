@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Student;
-use Symfony\Component\HttpFoundation\{ParameterBag, Cookie, ResponseHeaderBag};
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class CookieAuthService
 {
@@ -22,6 +24,7 @@ class CookieAuthService
     public function getRegisteredStudent(ParameterBag $cookieBag)
     {
         $token = (string) $cookieBag->get('token');
+
         return $this->gateway->findByToken($token);
     }
 
@@ -36,7 +39,8 @@ class CookieAuthService
     {
         $chars = array_merge(range('a', 'z'), range('A', 'Z'), range(0, 9));
         shuffle($chars);
-        return join('', $chars);
+
+        return implode('', $chars);
     }
 
     public function rememberStudent(Student $student, ResponseHeaderBag $headers)
@@ -51,7 +55,7 @@ class CookieAuthService
 
     public function isStudentRegistered(Student $student): bool
     {
-        return !! $student->getToken();
+        return (bool) $student->getToken();
     }
 
     public function logOut(ResponseHeaderBag $headers)
