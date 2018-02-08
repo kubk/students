@@ -3,11 +3,11 @@
 
 use App\Entity\Student;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
 $faker = Faker\Factory::create('ru_RU');
-$config = require __DIR__ . '/../config/config_app.php';
-$app = require __DIR__ . '/../src/app.php';
+$config = require __DIR__.'/../config/config_app.php';
+$app = require __DIR__.'/../src/app.php';
 
 /** @var \App\Service\CookieAuthService $authService */
 $authService = $app['authService'];
@@ -17,10 +17,10 @@ for ($i = 0; $i < $studentsCount; $i++) {
     $gender = $faker->randomElement([Student::GENDER_FEMALE, Student::GENDER_MALE]);
 
     if ($gender === Student::GENDER_FEMALE) {
-        $name    = $faker->firstNameFemale();
-        $surname = $faker->lastName() . 'a';
+        $name = $faker->firstNameFemale();
+        $surname = $faker->lastName().'a';
     } else {
-        $name    = $faker->firstNameMale();
+        $name = $faker->firstNameMale();
         $surname = $faker->lastName();
     }
 
@@ -35,7 +35,7 @@ for ($i = 0; $i < $studentsCount; $i++) {
 
     $authService->registerStudent($student);
     echo
-        $student->getName() . ' ' .
-        $student->getToken() . ' ' .
+        $student->getName().' '.
+        $student->getToken().' '.
         $student->getEmail(), PHP_EOL;
 }

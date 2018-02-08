@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use PHPUnit\Framework\TestCase;
 use App\Service\StudentTwigExtension;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class StudentTwigExtensionTest extends TestCase
@@ -77,7 +77,7 @@ class StudentTwigExtensionTest extends TestCase
         $search = "a'<sdsdf&sd";
         $result = $this->studentTwigExtension->markSearch($search, "a'<s");
         $this->assertContains("'", html_entity_decode($result, ENT_QUOTES));
-        $this->assertContains("&", html_entity_decode($result, ENT_QUOTES));
-        $this->assertContains("<", html_entity_decode($result, ENT_QUOTES));
+        $this->assertContains('&', html_entity_decode($result, ENT_QUOTES));
+        $this->assertContains('<', html_entity_decode($result, ENT_QUOTES));
     }
 }

@@ -21,12 +21,12 @@ class StudentGateway
     public function save(Student $student)
     {
         $preparedStatementsParams = [
-            ':name' => $student->getName(),
+            ':name'    => $student->getName(),
             ':surname' => $student->getSurname(),
-            ':email' => $student->getEmail(),
-            ':gender' => $student->getGender(),
-            ':rating' => $student->getRating(),
-            ':group' => $student->getGroup(),
+            ':email'   => $student->getEmail(),
+            ':gender'  => $student->getGender(),
+            ':rating'  => $student->getRating(),
+            ':group'   => $student->getGroup(),
         ];
 
         if (null === $student->getId()) {
@@ -52,7 +52,7 @@ class StudentGateway
         }
     }
 
-    public function findAllWith(string $search = '', string $column, string $order, int $offset, int $limit)
+    public function findAllWith(string $search, string $column, string $order, int $offset, int $limit)
     {
         if (!in_array($column, ['name', 'surname', 'group', 'rating', 'gender'])) {
             $column = 'id';
@@ -103,7 +103,7 @@ class StudentGateway
 
     private function findByColumn(string $column, $columnValue)
     {
-        $sql   = "SELECT * FROM students WHERE {$column} = :columnValue";
+        $sql = "SELECT * FROM students WHERE {$column} = :columnValue";
         $query = $this->pdo->prepare($sql);
         $query->execute([':columnValue' => $columnValue]);
 
@@ -115,15 +115,14 @@ class StudentGateway
     private function mapRowToObject(array $row): Student
     {
         return new Student([
-            'id' => $row['id'],
-            'name' => $row['name'],
+            'id'      => $row['id'],
+            'name'    => $row['name'],
             'surname' => $row['surname'],
-            'email' => $row['email'],
-            'group' => $row['group'],
-            'rating' => $row['rating'],
-            'token' => $row['token'],
-            'gender' => $row['gender'],
+            'email'   => $row['email'],
+            'group'   => $row['group'],
+            'rating'  => $row['rating'],
+            'token'   => $row['token'],
+            'gender'  => $row['gender'],
         ]);
     }
 }
-

@@ -6,10 +6,10 @@ namespace App\FormType;
 
 use App\Entity\Student;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class StudentType extends AbstractType
 {
@@ -45,8 +45,7 @@ class StudentType extends AbstractType
                     'class' => 'btn btn-primary',
                 ],
                 'label' => 'Отправить',
-            ])
-        ;
+            ]);
     }
 
     public function getName()

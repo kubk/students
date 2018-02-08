@@ -1,16 +1,18 @@
 <?php
 
 use App\FormType\LogOutType;
+use App\Service\CookieAuthService;
+use App\Service\StudentGateway;
 use App\Service\StudentTwigExtension;
 use App\Validation\StudentEmailUniqueValidator;
-use App\Service\{CookieAuthService, StudentGateway};
-use Silex\Provider\{SessionServiceProvider, FormServiceProvider};
+use Silex\Provider\FormServiceProvider;
+use Silex\Provider\SessionServiceProvider;
 
 $app = new Silex\Application();
 
 $app->register(new Silex\Provider\CsrfServiceProvider());
 $app->register(new Silex\Provider\TwigServiceProvider(), [
-    'twig.path' => __DIR__ . '/../templates',
+    'twig.path'           => __DIR__.'/../templates',
     'twig.form.templates' => ['bootstrap_3_layout.html.twig'],
 ]);
 
@@ -18,13 +20,14 @@ $app->extend('twig', function (Twig_Environment $twig, $app) {
     $twig->addExtension(new StudentTwigExtension($app['url_generator']));
     $logOutForm = $app['form.factory']->createBuilder(LogOutType::class)->getForm()->createView();
     $twig->addGlobal('logOutForm', $logOutForm);
+
     return $twig;
 });
 
 $app->register(new Silex\Provider\ValidatorServiceProvider(), [
     'validator.validator_service_ids' => [
         StudentEmailUniqueValidator::class => 'studentEmailUniqueValidator',
-    ]
+    ],
 ]);
 
 $app->register(new SessionServiceProvider());
