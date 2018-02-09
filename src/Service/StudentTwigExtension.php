@@ -36,6 +36,7 @@ class StudentTwigExtension extends \Twig_Extension
 
         if ($search) {
             $pattern = '/(' . preg_quote($search, '/') . ')/iu';
+
             return preg_replace_callback($pattern, [$this, 'wrapFound'], $input);
         }
 
@@ -45,6 +46,7 @@ class StudentTwigExtension extends \Twig_Extension
     private function wrapFound(array $matches): string
     {
         $found = $matches[1];
+
         return "<mark>{$found}</mark>";
     }
 

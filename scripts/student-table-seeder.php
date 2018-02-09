@@ -17,10 +17,10 @@ for ($i = 0; $i < $studentsCount; $i++) {
     $gender = $faker->randomElement([Student::GENDER_FEMALE, Student::GENDER_MALE]);
 
     if ($gender === Student::GENDER_FEMALE) {
-        $name    = $faker->firstNameFemale();
+        $name = $faker->firstNameFemale();
         $surname = $faker->lastName() . 'a';
     } else {
-        $name    = $faker->firstNameMale();
+        $name = $faker->firstNameMale();
         $surname = $faker->lastName();
     }
 

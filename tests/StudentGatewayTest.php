@@ -47,6 +47,7 @@ class StudentGatewayTest extends \PHPUnit_Extensions_Database_TestCase
     protected function getConnection()
     {
         $this->pdo->exec(file_get_contents(__DIR__ . '/../create-students-table.sql'));
+
         return $this->connection;
     }
 
@@ -90,7 +91,9 @@ class StudentGatewayTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $studentGateway = $this->studentGateway;
         $students = $studentGateway->findAllWith($search, $column, $order, $offset, $limit);
-        $studentsIds = array_map(function ($s) { return $s->getId(); }, $students);
+        $studentsIds = array_map(function ($s) {
+            return $s->getId();
+        }, $students);
         $this->assertEquals($studentsIds, $ids);
     }
 

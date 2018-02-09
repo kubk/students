@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Tests;
 
 use App\Entity\Student;
+use App\Service\CookieAuthService;
+use App\Service\StudentGateway;
 use PHPUnit\Framework\TestCase;
-use App\Service\{StudentGateway, CookieAuthService};
-use Symfony\Component\HttpFoundation\{ParameterBag, ResponseHeaderBag};
+use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class CookieAuthServiceTest extends TestCase
 {
